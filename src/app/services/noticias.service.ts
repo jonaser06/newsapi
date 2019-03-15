@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders,  } from '@angular/common/http';
 import { RespuestaTopheadlines } from '../interfaces/interfaces';
+import { environment } from 'src/environments/environment';
+
+const apiKey = environment.ApiKey;
+const apiUrl = environment.apiUrl;
+
+const headers = new HttpHeaders({
+  'X-Api-key' : apiKey
+});
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +19,20 @@ export class NoticiasService {
 
   }
 
+  private ejecutarQuery<T>( query: string){
+    query  = apiUrl + query;
+    return this.http.get<T>(query, { headers });
+  }
+
   getTopLines(){
-    return this.http.get<RespuestaTopheadlines>('https://newsapi.org/v2/top-headlines?country=us&apiKey=fb9c042b85a446d983a2e0a1d0a35413');
+    
+    return this.ejecutarQuery<RespuestaTopheadlines>('/top-headlines?country=us');
+    
+  }
+
+  getTopLineCategoria(categoria: string){
+
+    return this.ejecutarQuery<RespuestaTopheadlines>('/top-headlines?country=us&category='+categoria);
+    
   }
 }
